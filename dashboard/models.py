@@ -9,7 +9,7 @@ class Hospital(models.Model):
     longitude = models.FloatField()
 
     def __str__(self):
-        return "{} - {}, {}".format(self.name, self.latitude, self.longitude)
+        return "{} {} {}".format(self.name, self.latitude, self.longitude)
 
 
 class Patient(models.Model):
@@ -19,7 +19,7 @@ class Patient(models.Model):
     contact_number = models.CharField(max_length=10)
 
     def __str__(self):
-        return "{} - {}, {}".format(self.name, self.dob, self.contact_number)
+        return "{} {} {}".format(self.name, self.dob, self.contact_number)
 
 
 class Ambulance(models.Model):
@@ -28,9 +28,10 @@ class Ambulance(models.Model):
     latitude = models.FloatField()
     longitude = models.FloatField()
     contact_number = models.CharField(max_length=10)
+    status = models.BooleanField(default=False)
 
     def __str__(self):
-        return "{} - {}, {}".format(self.number_plate, self.latitude, self.longitude, self.contact_number)
+        return "{} {} {} {}".format(self.number_plate, self.latitude, self.longitude, self.contact_number)
 
 
 class Trip(models.Model):
@@ -42,4 +43,4 @@ class Trip(models.Model):
     hospital_id = models.ForeignKey(Hospital, models.SET_NULL, null=True)
 
     def __str__(self):
-        return "{} - {}, {}".format(self.patient_id, self.ambulance_id, self.start_latitude, self.start_longitude, self.hospital_id)
+        return "{} {} {} {} {}".format(self.patient_id, self.ambulance_id, self.start_latitude, self.start_longitude, self.hospital_id)
