@@ -3,10 +3,17 @@ from .models import Hospital, Patient, Ambulance, Trip
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 
+
+class TripSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Trip
+        fields = ('id', 'patient_id', 'ambulance_id', 'start_latitude', 'start_longitude', 'hospital_id')
+
+
 class HospitalSerializer(serializers.ModelSerializer):
     class Meta:
         model = Hospital
-        fields = ('id', 'name', 'latitude', 'longitude')
+        fields = ('id', 'name', 'latitude', 'longitude', 'trips')
 
 
 class PatientSerializer(serializers.ModelSerializer):
@@ -20,10 +27,10 @@ class PatientSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Patient
-        fields = ('id', 'name', 'dob', 'contact_number')
+        fields = ('id', 'name', 'dob', 'contact_number', 'trips')
 
 
 class AmbulanceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ambulance
-        fields = ('number_plate', 'latitude', 'longitude', 'contact_number', 'status')
+        fields = ('id', 'number_plate', 'latitude', 'longitude', 'contact_number', 'status', 'trips')

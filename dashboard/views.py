@@ -8,8 +8,8 @@ from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .models import Hospital, Patient, Ambulance
-from .serializers import HospitalSerializer, PatientSerializer, AmbulanceSerializer
+from .models import Hospital, Patient, Ambulance, Trip
+from .serializers import HospitalSerializer, PatientSerializer, AmbulanceSerializer, TripSerializer
 
 # Create your views here.
 
@@ -51,10 +51,12 @@ def login(request):
         return Response({'error': 'Please provide both name and DOB.'}, status=status.HTTP_400_BAD_REQUEST)
     else:
         queryset = Patient.objects.all()
-        patient = queryset.filter(name=name).first()
+        patient = queryset.filter(name=name, contact_number=contact_number).first()
         if not patient:
             return Response({'error': 'Invalid Credentials'}, status=status.HTTP_404_NOT_FOUND)
-        user = User.objects.create_user(username=name, password=contact_number)
+        user = authenticate(username=name, password=contact_number)
+        if user is None:
+            user = User.objects.create_user(username=name, password=contact_number)
         token, _ = Token.objects.get_or_create(user=user)
         return Response({'token': token.key}, status=status.HTTP_200_OK)
 
@@ -81,6 +83,20 @@ class AmbulanceViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = Ambulance.objects.all()
+        id = self.request.query_params.get('id', None)
+        if id is not None:
+            queryset = queryset.filter(id=id)
+        return queryset
+
+
+class TripViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows trips to be viewed.
+    """
+    serializer_class = TripSerializer
+
+    def get_queryset(self):
+        queryset = Trip.objects.all()
         id = self.request.query_params.get('id', None)
         if id is not None:
             queryset = queryset.filter(id=id)
