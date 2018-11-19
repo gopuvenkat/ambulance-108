@@ -25,7 +25,7 @@ SECRET_KEY = '7vd)s!7jh*n68d9rm%j6)zgl7z4rr0$g$ssp^pj4sgt5r!1w1c'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'ambulance-108.herokuapp.com']
 
 
 # Application definition
