@@ -1,12 +1,12 @@
 from django.urls import path
 from django.conf.urls import include, url
-from .views import HospitalViewSet, PatientCreate, login, PatientViewSet, AmbulanceViewSet, TripViewSet
+from .views import HospitalViewSet, PatientCreate, login, PatientViewSet, AmbulanceViewSet, TripView
 
 urlpatterns = [
-    path(r'api/hospital/', HospitalViewSet.as_view({'get': 'list'}), name='hospital-all'),
-    path(r'api/patient/', PatientViewSet.as_view({'get': 'list'}), name='patient-all'),
-    path(r'api/ambulance/', AmbulanceViewSet.as_view({'get': 'list'}), name='ambulance-all'),
-    path(r'api/trip/', TripViewSet.as_view({'get': 'list'}), name='trip-all'),
-    url(r'api/signup/', PatientCreate.as_view(), name='patient-signup'),
-    url(r'api/signin/', login, name='patient-login')
+    path(r'hospital/', HospitalViewSet.as_view({'get': 'list'}), name='hospital-all'),
+    path(r'patient/', PatientViewSet.as_view({'get': 'list'}), name='patient-all'),
+    path(r'ambulance/', AmbulanceViewSet.as_view({'get': 'list'}), name='ambulance-all'),
+    path(r'trip/', TripView.as_view(), name='trip-all'),
+    url(r'signup/', PatientCreate.as_view(), name='patient-signup'),
+    url(r'signin/', login, name='patient-login')
 ]

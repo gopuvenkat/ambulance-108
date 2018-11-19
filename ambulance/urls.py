@@ -22,7 +22,7 @@ from rest_framework.documentation import include_docs_urls
 
 urlpatterns = [
     path(r'admin/', admin.site.urls),
-    path(r'', include('dashboard.urls')),
+    path(r'api/', include('dashboard.urls')),
     url(r'api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'api/docs/', include_docs_urls(title='API Documentation', authentication_classes=[], permission_classes=[]))
 ]

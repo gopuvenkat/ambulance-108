@@ -2,6 +2,9 @@ from django.shortcuts import render
 from rest_framework import viewsets
 from django.contrib.auth.models import User, Group, AbstractUser
 from django.contrib.auth import authenticate
+from django.core import serializers
+import json
+from django.forms.models import model_to_dict
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
@@ -89,15 +92,25 @@ class AmbulanceViewSet(viewsets.ModelViewSet):
         return queryset
 
 
-class TripViewSet(viewsets.ModelViewSet):
+class TripView(APIView):
     """
     API endpoint that allows trips to be viewed.
     """
-    serializer_class = TripSerializer
+    def get(self, request):
+        id = request.query_params.get('id', None)
+        if(id):
+            trip = Trip.objects.get(id=id)
+            resp = serializers.serialize("json", [trip.patient_id])
+            patient = json.loads(resp)
 
-    def get_queryset(self):
-        queryset = Trip.objects.all()
-        id = self.request.query_params.get('id', None)
-        if id is not None:
-            queryset = queryset.filter(id=id)
-        return queryset
+            resp = serializers.serialize('json', [trip.ambulance_id])
+            ambulance = json.loads(resp)
+
+            resp = serializers.serialize('json', [trip.hospital_id], ensure_ascii=True)[1:-1]
+            hospital = json.loads(resp)
+
+            print(hospital)
+            if(trip):
+                result = {'id': trip.id, 'patient_id': patient, 'ambulance_id': ambulance, 'start_latitude': trip.start_latitude, 'start_longitude': trip.start_longitude, 'hospital': hospital}
+                return Response(result, status=status.HTTP_200_OK)
+        return Response({'error': 'Not found'}, status=status.HTTP_404_NOT_FOUND)
