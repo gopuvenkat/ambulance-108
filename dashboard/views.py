@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from rest_framework import viewsets
 from django.contrib.auth.models import User, Group, AbstractUser
 from django.contrib.auth import authenticate
@@ -13,7 +13,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from .models import Hospital, Patient, Ambulance, Trip
 from .serializers import HospitalSerializer, PatientSerializer, AmbulanceSerializer, TripSerializer
-
+from common.utils import get_distance, assign_nearest_ambulance, get_nearest_hospital
 # Create your views here.
 
 
@@ -29,6 +29,7 @@ class HospitalViewSet(viewsets.ModelViewSet):
         if id is not None:
             queryset = queryset.filter(id=id)
         return queryset
+
 
 @permission_classes((AllowAny, ))
 class PatientCreate(APIView):
@@ -94,23 +95,49 @@ class AmbulanceViewSet(viewsets.ModelViewSet):
 
 class TripView(APIView):
     """
+    get:
     API endpoint that allows trips to be viewed.
+
+    post:
+    API endpoint to create a trip.
     """
     def get(self, request):
         id = request.query_params.get('id', None)
         if(id):
-            trip = Trip.objects.get(id=id)
+            trip = get_object_or_404(Trip, id=id)
             resp = serializers.serialize("json", [trip.patient_id])
             patient = json.loads(resp)
 
             resp = serializers.serialize('json', [trip.ambulance_id])
             ambulance = json.loads(resp)
 
-            resp = serializers.serialize('json', [trip.hospital_id], ensure_ascii=True)[1:-1]
+            resp = serializers.serialize('json', [trip.hospital_id])
             hospital = json.loads(resp)
 
-            print(hospital)
             if(trip):
                 result = {'id': trip.id, 'patient_id': patient, 'ambulance_id': ambulance, 'start_latitude': trip.start_latitude, 'start_longitude': trip.start_longitude, 'hospital': hospital}
                 return Response(result, status=status.HTTP_200_OK)
-        return Response({'error': 'Not found'}, status=status.HTTP_404_NOT_FOUND)
+        return Response({'error': 'Please provide valid ID'}, status=status.HTTP_400_BAD_REQUEST)
+
+    def post(self, request):
+        patient_id = request.data.get('patient_id', None)
+        start_latitude = request.data.get('start_latitude', None)
+        start_longitude = request.data.get('start_longitude', None)
+        if(patient_id):
+            patient = get_object_or_404(Patient, id=patient_id)
+            if(start_latitude and start_longitude):
+                pos = (float(start_latitude), float(start_longitude))
+                ambulance = assign_nearest_ambulance(pos)
+                hospital = get_nearest_hospital(pos)
+                trip = Trip(patient_id=patient, ambulance_id=ambulance, start_latitude=start_latitude, start_longitude=start_longitude, hospital_id=hospital)
+                trip.save()
+                resp = serializers.serialize("json", [patient])
+                patient = json.loads(resp)
+                resp = serializers.serialize('json', [ambulance])
+                ambulance = json.loads(resp)
+                resp = serializers.serialize('json', [hospital])
+                hospital = json.loads(resp)
+                result = {'id': trip.id, 'patient_id': patient, 'ambulance_id': ambulance, 'start_latitude': trip.start_latitude, 'start_longitude': trip.start_longitude, 'hospital': hospital}
+                return Response(result, status=status.HTTP_200_OK)
+            return Response({'error': 'Please provide the latitude and longitude.'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'error': 'Please provide valid ID'}, status=status.HTTP_400_BAD_REQUEST)

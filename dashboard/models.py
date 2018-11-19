@@ -36,11 +36,11 @@ class Ambulance(models.Model):
 
 class Trip(models.Model):
 
-    patient_id = models.ForeignKey(Patient, related_name='trips', on_delete=models.SET_NULL, null=True)
-    ambulance_id = models.ForeignKey(Ambulance, related_name='trips', on_delete=models.SET_NULL, null=True)
+    patient_id = models.ForeignKey(Patient, related_name='trips', on_delete=models.SET_NULL, blank=True, null=True)
+    ambulance_id = models.ForeignKey(Ambulance, related_name='trips', on_delete=models.SET_NULL, blank=True, null=True)
     start_latitude = models.FloatField(null=False)
     start_longitude = models.FloatField(null=False)
-    hospital_id = models.ForeignKey(Hospital, related_name='trips', on_delete=models.SET_NULL, null=True)
+    hospital_id = models.ForeignKey(Hospital, related_name='trips', on_delete=models.SET_NULL, blank=True, null=True)
 
     def __str__(self):
         return '{}, {}, {}, {}, {}'.format(self.patient_id, self.ambulance_id, self.start_latitude, self.start_longitude, self.hospital_id)
