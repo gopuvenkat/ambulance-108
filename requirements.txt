@@ -13,6 +13,7 @@ Jinja2==2.10
 MarkupSafe==1.1.0
 mpu==0.16.0
 psycopg2==2.7.6.1
+psycopg2-binary==2.7.6.1
 python-dateutil==1.5
 pytz==2018.7
 requests==2.20.1
