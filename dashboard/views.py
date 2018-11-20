@@ -93,6 +93,42 @@ class AmbulanceViewSet(viewsets.ModelViewSet):
         return queryset
 
 
+class AmbulancePost(APIView):
+    """
+    post:
+    API to complete trip.
+    """
+    def post(self, request):
+        id = request.query_params.get('id', None)
+        if(id):
+            ambulance = get_object_or_404(Ambulance, id=id)
+            ambulance.status = False
+            ambulance.save()
+            if(ambulance):
+                result = {'id': ambulance.id, 'number_plate': ambulance.number_plate, 'latitude': ambulance.latitude, 'longitude': ambulance.longitude, 'contact_number': ambulance.contact_number, 'status': ambulance.status}
+                return Response(result, status=status.HTTP_200_OK)
+        return Response({'error': 'Please provide ID'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class AmbulanceUpdate(APIView):
+    """
+    put:
+    API to update location.
+    """
+    def put(self, request):
+        id = request.query_params.get('id', None)
+        if(id):
+            ambulance = get_object_or_404(Ambulance, id=id)
+            latitude = request.data.get('latitude', None)
+            longitude = request.data.get('longitude', None)
+            ambulance.latitude = latitude
+            ambulance.longitude = longitude
+            ambulance.save()
+            result = {'id': ambulance.id, 'number_plate': ambulance.number_plate, 'latitude': ambulance.latitude, 'longitude': ambulance.longitude, 'contact_number': ambulance.contact_number, 'status': ambulance.status}
+            return Response(result, status=status.HTTP_200_OK)
+        return Response({'error': 'Please provide ID'}, status=status.HTTP_400_BAD_REQUEST)
+
+
 class TripView(APIView):
     """
     get:
@@ -102,7 +138,7 @@ class TripView(APIView):
     API endpoint to create a trip.
     """
     def get(self, request):
-        id = request.query_params.get('id', None)
+        id = request.data.get('id', None)
         if(id):
             trip = get_object_or_404(Trip, id=id)
             resp = serializers.serialize("json", [trip.patient_id])
@@ -117,7 +153,7 @@ class TripView(APIView):
             if(trip):
                 result = {'id': trip.id, 'patient_id': patient, 'ambulance_id': ambulance, 'start_latitude': trip.start_latitude, 'start_longitude': trip.start_longitude, 'hospital': hospital}
                 return Response(result, status=status.HTTP_200_OK)
-        return Response({'error': 'Please provide valid ID'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'error': 'Please provide ID'}, status=status.HTTP_400_BAD_REQUEST)
 
     def post(self, request):
         patient_id = request.data.get('patient_id', None)
