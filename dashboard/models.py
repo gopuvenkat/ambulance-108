@@ -31,7 +31,7 @@ class Ambulance(models.Model):
     status = models.BooleanField(default=False)
 
     def __str__(self):
-        return '{}, {}, {}, {}'.format(self.number_plate, self.latitude, self.longitude, self.contact_number)
+        return '{}, {}, {}, {}, {}'.format(self.number_plate, self.latitude, self.longitude, self.contact_number, self.status)
 
 
 class Trip(models.Model):
