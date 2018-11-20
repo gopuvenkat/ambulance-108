@@ -62,7 +62,7 @@ def patient_login(request):
         if user is None:
             user = User.objects.create_user(username=name, password=contact_number)
         token, _ = Token.objects.get_or_create(user=user)
-        return Response({'token': token.key}, status=status.HTTP_200_OK)
+        return Response({'id': patient.id, 'name': patient.name, 'contact_number': patient.contact_number, 'dob': patient.dob, 'token': token.key}, status=status.HTTP_200_OK)
 
 
 @permission_classes((AllowAny, ))
