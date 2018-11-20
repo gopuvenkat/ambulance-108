@@ -47,7 +47,7 @@ class PatientCreate(APIView):
 
 @api_view(['POST'])
 @permission_classes((AllowAny, ))
-def login(request):
+def patient_login(request):
     name = request.data.get('name')
     dob = request.data.get('dob')
     contact_number = request.data.get('contact_number')
@@ -61,6 +61,39 @@ def login(request):
         user = authenticate(username=name, password=contact_number)
         if user is None:
             user = User.objects.create_user(username=name, password=contact_number)
+        token, _ = Token.objects.get_or_create(user=user)
+        return Response({'token': token.key}, status=status.HTTP_200_OK)
+
+
+@permission_classes((AllowAny, ))
+class AmbulanceCreate(APIView):
+    """
+    Creates the ambulance.
+    """
+    def post(self, request, format='json'):
+        serializer = AmbulanceSerializer(data=request.data)
+        if(serializer.is_valid()):
+            user = serializer.save()
+            if(user):
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+@permission_classes((AllowAny, ))
+def ambulance_login(request):
+    number_plate = request.data.get('number_plate')
+    contact_number = request.data.get('contact_number')
+    if number_plate is None or contact_number is None:
+        return Response({'error': 'Please provide both number plate and contact number.'}, status=status.HTTP_400_BAD_REQUEST)
+    else:
+        queryset = Ambulance.objects.all()
+        ambulance = queryset.filter(number_plate=number_plate, contact_number=contact_number).first()
+        if not ambulance:
+            return Response({'error': 'Invalid Credentials'}, status=status.HTTP_404_NOT_FOUND)
+        user = authenticate(username=number_plate, password=contact_number)
+        if user is None:
+            user = User.objects.create_user(username=number_plate, password=contact_number)
         token, _ = Token.objects.get_or_create(user=user)
         return Response({'token': token.key}, status=status.HTTP_200_OK)
 
@@ -95,10 +128,10 @@ class AmbulanceViewSet(viewsets.ModelViewSet):
 
 class AmbulancePost(APIView):
     """
-    post:
+    put:
     API to complete trip.
     """
-    def post(self, request):
+    def put(self, request):
         id = request.query_params.get('id', None)
         if(id):
             ambulance = get_object_or_404(Ambulance, id=id)

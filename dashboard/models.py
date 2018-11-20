@@ -25,8 +25,8 @@ class Patient(models.Model):
 class Ambulance(models.Model):
 
     number_plate = models.CharField(max_length=15)
-    latitude = models.FloatField()
-    longitude = models.FloatField()
+    latitude = models.FloatField(default=0)
+    longitude = models.FloatField(default=0)
     contact_number = models.CharField(max_length=10)
     status = models.BooleanField(default=False)
 

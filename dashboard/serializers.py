@@ -36,8 +36,16 @@ class PatientSerializer(serializers.ModelSerializer):
 
 
 class AmbulanceSerializer(serializers.ModelSerializer):
+    number_plate = serializers.CharField(required=True, validators=[UniqueValidator(queryset=Ambulance.objects.all())])
+    latitude = serializers.FloatField(required=False)
+    longitude = serializers.FloatField(required=False)
+    contact_number = serializers.CharField(validators=[UniqueValidator(queryset=Ambulance.objects.all())])
 
     trips = TripSerializer(many=True, read_only=True)
+
+    def create_user(self, validated_data):
+        ambulance = Ambulance.objects.create_user(validated_data['number_plate'], validated_data['latitude'], validated_data['longitude'], validated_data['contact_number'])
+        return ambulance
 
     class Meta:
         model = Ambulance
