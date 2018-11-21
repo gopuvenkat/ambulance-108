@@ -4,11 +4,10 @@ pipeline {
     stage('Build') {
       steps {
         sh '''#!/bin/bash
-source /home/aditya/Courses/sem5/software_engineering_lab/project/django/bin/activate
-pip install -r --user requirements.txt
-python manage.py test
-python manage.py migrate
-BUILD_ID=dontKillMe nohup python manage.py runserver & '''
+pip3 install -r requirements.txt
+python3 manage.py test
+python3 manage.py migrate
+BUILD_ID=dontKillMe nohup python3 manage.py runserver & '''
       }
     }
   }
