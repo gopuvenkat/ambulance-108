@@ -171,7 +171,7 @@ class TripView(APIView):
     API endpoint to create a trip.
     """
     def get(self, request):
-        id = request.data.get('id', None)
+        id = request.query_params.get('id', None)
         if(id):
             trip = get_object_or_404(Trip, id=id)
             resp = serializers.serialize("json", [trip.patient_id])
