@@ -40,6 +40,7 @@ class Trip(models.Model):
     ambulance_id = models.ForeignKey(Ambulance, related_name='trips', on_delete=models.SET_NULL, blank=True, null=True)
     start_latitude = models.FloatField(null=False)
     start_longitude = models.FloatField(null=False)
+    on_trip = models.BooleanField(default=True)
     hospital_id = models.ForeignKey(Hospital, related_name='trips', on_delete=models.SET_NULL, blank=True, null=True)
 
     def __str__(self):

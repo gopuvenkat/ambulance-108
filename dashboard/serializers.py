@@ -7,7 +7,7 @@ from rest_framework.validators import UniqueValidator
 class TripSerializer(serializers.ModelSerializer):
     class Meta:
         model = Trip
-        fields = ('id', 'patient_id', 'ambulance_id', 'start_latitude', 'start_longitude', 'hospital_id')
+        fields = ('id', 'patient_id', 'ambulance_id', 'start_latitude', 'start_longitude', 'on_trip', 'hospital_id')
 
 
 class HospitalSerializer(serializers.ModelSerializer):
