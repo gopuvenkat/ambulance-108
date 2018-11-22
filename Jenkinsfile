@@ -7,7 +7,7 @@ pipeline {
 python3 manage.py migrate'''
       }
     }
-    stage('Testing') {
+    stage('Test') {
       steps {
         sh '''#!/bin/bash
 python3 manage.py test
