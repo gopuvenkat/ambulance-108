@@ -21,7 +21,7 @@ from rest_framework.settings import api_settings
 from rest_framework.documentation import include_docs_urls
 
 urlpatterns = [
-    url(r'', include_docs_urls(title='API Documentation', authentication_classes=[], permission_classes=[])),
+    path(r'', admin.site.urls),
     path(r'admin/', admin.site.urls),
     path(r'api/', include('dashboard.urls')),
     url(r'api-auth/', include('rest_framework.urls', namespace='rest_framework')),
