@@ -95,7 +95,7 @@ def ambulance_login(request):
         if user is None:
             user = User.objects.create_user(username=number_plate, password=contact_number)
         token, _ = Token.objects.get_or_create(user=user)
-        return Response({'token': token.key}, status=status.HTTP_200_OK)
+        return Response({'id': ambulance.id, 'number_plate': ambulance.number_plate, 'contact_number': ambulance.contact_number, 'token': token.key}, status=status.HTTP_200_OK)
 
 
 class PatientViewSet(viewsets.ModelViewSet):
