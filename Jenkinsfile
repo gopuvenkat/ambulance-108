@@ -4,12 +4,17 @@ pipeline {
     stage('Build') {
       steps {
         sh '''#!/bin/bash
-python3 manage.py migrate
+python3 manage.py migrate'''
+      }
+    }
+    stage('Testing') {
+      steps {
+        sh '''#!/bin/bash
 python3 manage.py test
 '''
       }
     }
-    stage('Run Server') {
+    stage('Deploy') {
       steps {
         sh 'BUILD_ID=dontKillMe nohup python3 manage.py runserver & '
       }
