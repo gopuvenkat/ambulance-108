@@ -4,9 +4,30 @@ pipeline {
     stage('Build') {
       steps {
         sh '''#!/bin/bash
-python3 manage.py migrate
+python3 manage.py migrate'''
+      }
+    }
+    stage('Test') {
+      steps {
+        sh '''#!/bin/bash
 python3 manage.py test
-BUILD_ID=dontKillMe nohup python3 manage.py runserver & '''
+'''
+      }
+    }
+    stage('Deploy') {
+      steps {
+        sh '''#!/bin/bash
+
+if [ -e /tmp/ambulance.pid ]
+then
+    echo "Found pid file. Killing process..."
+    kill $(cat /tmp/ambulance.pid)
+else
+    echo "No previous process found."
+fi
+
+nohup python3 manage.py runserver &
+echo $! > /tmp/ambulance.pid'''
       }
     }
   }
