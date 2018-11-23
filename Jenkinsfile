@@ -17,7 +17,17 @@ python3 manage.py test
     stage('Deploy') {
       steps {
         sh '''#!/bin/bash
-BUILD_ID=dontKillMe nohup python3 manage.py runserver '''
+
+if [ -e /tmp/ambulance.pid ]
+then
+    echo "Found pid file. Killing process..."
+    kill -9 $(cat /tmp/ambulance.pid)
+else
+    echo "No previous process found."
+fi
+
+nohup python3 manage.py runserver &
+$! > /tmp/ambulance.pid'''
       }
     }
   }
