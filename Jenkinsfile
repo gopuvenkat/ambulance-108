@@ -17,7 +17,7 @@ python3 manage.py test
     stage('Deploy') {
       steps {
         sh '''#!/bin/bash
-BUILD_ID=dontKillMe nohup python3 manage.py runserver & '''
+BUILD_ID=dontKillMe nohup python3 manage.py runserver '''
       }
     }
   }
