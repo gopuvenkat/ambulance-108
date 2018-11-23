@@ -21,7 +21,7 @@ python3 manage.py test
 if [ -e /tmp/ambulance.pid ]
 then
     echo "Found pid file. Killing process..."
-    kill -9 $(cat /tmp/ambulance.pid)
+    kill $(cat /tmp/ambulance.pid)
 else
     echo "No previous process found."
 fi
