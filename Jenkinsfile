@@ -27,7 +27,7 @@ else
 fi
 
 nohup python3 manage.py runserver &
-$! > /tmp/ambulance.pid'''
+echo $! > /tmp/ambulance.pid'''
       }
     }
   }
