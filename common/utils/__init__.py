@@ -14,7 +14,7 @@ def get_nearest_ambulance(pos):
         tmp_pos = (ambulance.latitude, ambulance.longitude)
         dist = get_distance(pos, tmp_pos)
         if(dist < min_dist):
-            dist = min_dist
+            min_dist = dist
             a = ambulance
     return a
 
